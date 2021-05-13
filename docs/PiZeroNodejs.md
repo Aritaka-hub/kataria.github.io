@@ -128,7 +128,7 @@ npm install node-web-gpio node-web-i2c
 Raspberry Pi に接続した LED を点滅させるプログラムを書きます。
 PiZero は Raspberry Pi とピン配置が異なるので、下の図の通りに配線します。
 
-![{% cloudinary small ./PiZero_LED.png alt="PiZero配線図" class="right" style="width: 35%; margin: 0 0 0 1em;" %}](./PiZero_LED.png)
+![PiZero配線図](./PiZero_LED.png)
 
 空のテキストファイル main.js を作成し、Node.js のための JavaScript のプログラムを書きます。
 
@@ -202,7 +202,7 @@ measure();
 
 接続は下の図のようになります。
 
-![{% cloudinary small ./PiZero_TEMP.png alt="PiZero温度センサー図" class="right" style="width: 35%; margin: 0 0 0 1em;" %}](./PiZero_TEMP.png)
+![PiZero温度センサー図](./PiZero_TEMP.png)
 
 
 
