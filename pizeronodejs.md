@@ -80,9 +80,12 @@ export PATH=/usr/local/lib/nodejs/node-$VERSION-$DISTRO/bin:$PATH
 バージョンをチェックして確認をしてください。
 
 ```
-node -v
-npm -v
-npx -v
+$ node -v
+v14.16.1
+$ npm -v
+6.14.12
+$ npx -v
+6.14.12
 ```
 
 参照: [Installation · nodejs/help Wiki · GitHub](https://github.com/nodejs/help/wiki/Installation)
@@ -125,7 +128,7 @@ npm install node-web-gpio node-web-i2c
 Raspberry Pi に接続した LED を点滅させるプログラムを書きます。
 PiZero は Raspberry Pi とピン配置が異なるので、下の図の通りに配線します。
 
-![{% cloudinary small ./PiZero_LED.png alt="PiZero配線図" class="right" style="width: 35%; margin: 0 0 0 1em;" %}](./PiZero_LED.png)
+![PiZero配線図](./PiZero_LED.png)
 
 空のテキストファイル main.js を作成し、Node.js のための JavaScript のプログラムを書きます。
 
@@ -199,11 +202,12 @@ measure();
 
 接続は下の図のようになります。
 
-![{% cloudinary small ./PiZero_TEMP.png alt="PiZero温度センサー図" class="right" style="width: 35%; margin: 0 0 0 1em;" %}](./PiZero_TEMP.png)
+![PiZero温度センサー図](./PiZero_TEMP.png)
 
 
 
-デバイスを扱うためのパッケージについてさらに知りたい場合は [CHIRIMEN Drivers](https://github.com/chirimen-oh/chirimen-drivers) を参照してください。
+デバイスを扱うためのパッケージについてさらに知りたい場合は [サンプル一覧](./CHIRIMEN-Nodejs-examples) を参照してください。
+※ドライバは随時追加されていきます。[CHIRIMEN Drivers](https://github.com/chirimen-oh/chirimen-drivers) に最新情報が掲載されますので、併せて確認してみてください。
 
 また、CHIRIMEN チュートリアルのなかには、Web GPIO や Web I2C によって扱うことのできる[外部デバイスとサンプルコードの一覧があります](https://tutorial.chirimen.org/raspi/partslist)。こちらも参考になるかもしれません。
 
@@ -220,3 +224,4 @@ measure();
 
 
 以上となります。
+
