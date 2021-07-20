@@ -26,13 +26,13 @@ PiZero のUSB接続は [USBポート（電源ポートとは異なる方）](htt
 [ブラウザの Web Serial を使用して接続が可能](https://svg2.mbsrv.net/chirimen/webSerial_piZero/testRt4.html)になります。
 PiZero と PC を接続したら、Connect and Login PiZero をクリックしてください。すると別ウィンドウで接続候補がリスト表示されます。
 
-![Serialポートの選択](.\imgs\WebSerialRPiZeroTerminal01.jpg)
+![Serialポートの選択](./imgs/WebSerialRPiZeroTerminal01.jpg)
 
 該当する物を選んで接続をクリックするとつながります。うまく接続されると Terminal に CONNECTED と表示されます。
 公式 OS イメージを使用している人は ログイン名：pi、パスワード：raspberry（デフォルト）としてください。
 現時点ではオートログインは上記の設定で行われる仕様です。
 
-![USB接続の成功画面](.\imgs\WebSerialRPiZeroTerminal02.jpg)
+![USB接続の成功画面](./imgs/WebSerialRPiZeroTerminal02.jpg)
 
 無事に接続が完了したら、その後はコマンドで PiZero を操作することが可能になります。
 [Web Serial RPiZero Terminal のページ](https://svg2.mbsrv.net/chirimen/webSerial_piZero/testRt4.html)には、一部の操作を簡単にする機能が備わっています。
@@ -42,7 +42,7 @@ PiZero と PC を接続したら、Connect and Login PiZero をクリックし�
 `wifi scan`：PiZero の周囲にある Wi-Fi 環境（SSID）の一覧を別ウィンドウに表示します　※下の画像を参照
 upload:`ファイルを選択`：今いるディレクトリにファイルを送ります　※ Serial 通信は低速なので、ファイルサイズの大きいデータ送信は非推奨
 
-![Wi-Fiの一覧表示](.\imgs\WebSerialRPiZeroTerminal03.jpg)
+![Wi-Fiの一覧表示](./imgs/WebSerialRPiZeroTerminal03.jpg)
 
 # Hello Real World（Lチカを実行する）
 
