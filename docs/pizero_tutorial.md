@@ -26,13 +26,13 @@ PiZero のUSB接続は [USBポート（電源ポートとは異なる方）](htt
 [ブラウザの Web Serial を使用して接続が可能](https://svg2.mbsrv.net/chirimen/webSerial_piZero/testRt4.html)になります。
 PiZero と PC を接続したら、Connect and Login PiZero をクリックしてください。すると別ウィンドウで接続候補がリスト表示されます。
 
-![Serialポートの選択](./imgs/WebSerialRPiZeroTerminal01.jpg)
+![Serialポートの選択](.\imgs\WebSerialRPiZeroTerminal01.jpg)
 
 該当する物を選んで接続をクリックするとつながります。うまく接続されると Terminal に CONNECTED と表示されます。
 公式 OS イメージを使用している人は ログイン名：pi、パスワード：raspberry（デフォルト）としてください。
 現時点ではオートログインは上記の設定で行われる仕様です。
 
-![USB接続の成功画面](./imgs/WebSerialRPiZeroTerminal02.jpg)
+![USB接続の成功画面](.\imgs\WebSerialRPiZeroTerminal02.jpg)
 
 無事に接続が完了したら、その後はコマンドで PiZero を操作することが可能になります。
 [Web Serial RPiZero Terminal のページ](https://svg2.mbsrv.net/chirimen/webSerial_piZero/testRt4.html)には、一部の操作を簡単にする機能が備わっています。
@@ -42,11 +42,21 @@ PiZero と PC を接続したら、Connect and Login PiZero をクリックし�
 `wifi scan`：PiZero の周囲にある Wi-Fi 環境（SSID）の一覧を別ウィンドウに表示します　※下の画像を参照
 upload:`ファイルを選択`：今いるディレクトリにファイルを送ります　※ Serial 通信は低速なので、ファイルサイズの大きいデータ送信は非推奨
 
-![Wi-Fiの一覧表示](./imgs/WebSerialRPiZeroTerminal03.jpg)
+![Wi-Fiの一覧表示](.\imgs\WebSerialRPiZeroTerminal03.jpg)
 
 # Hello Real World（Lチカを実行する）
 
 Raspberry Pi に接続した LED を点滅させるプログラムを書きます。
+
+準備として作業用のディレクトリを作り、そのディレクトリの中でプログラムを実行します。Terminal を使用して以下のコマンドを入力します。
+
+```
+mkdir hello-real-world
+cd hello-real-world
+```
+
+※作業ディレクトリへの移動は Terminal の右に表示されるリストからの移動も出来ます。
+
 PiZero は Raspberry Pi とピン配置が異なるので、下の図の通りに配線します。
 
 ![PiZero配線図](./imgs/pizero_led.png)
@@ -93,15 +103,16 @@ LED が点滅すれば完成です 🎉
 
 # いろいろなデバイスを試す
 
-CHIRIMEN ブラウザーから利用できるいろいろなデバイスはすべて同じように Node.js から扱うことができます。
-CUI版 の OS には i2c 関係のパッケージが入っていないので導入します。また、デフォルトで i2c が無効になっているので、raspi-config で有効化しておきます。
-
-```
-sudo apt-get install -y i2c-tools
-sudo raspi-config
-```
+CHIRIMEN ブラウザーから利用できるいろいろなデバイスはすべて同じように Node.js から扱うことができます。例として i2c 接続の温度センサーを試します。
 
 次のコードは温度センサー ADT7410 を利用して温度を表示するプログラムです。
+空のテキストファイル `temp.js` を作成し、Node.js のための JavaScript のプログラムを書きます。
+
+```
+editor temp.js
+```
+
+テキストエディターで temp.js を次のように書きます。
 
 ```javascript
 const { requestI2CAccess } = require("node-web-i2c");
@@ -119,11 +130,40 @@ async function measure() {
 measure();
 ```
 
-コマンド `npm i @chirimen/adt7410` を実行すると、温度センサー ADT7410 を利用するための `@chirimen/adt7410` パッケージをインストールできます。
-
 接続は下の図のようになります。
 
 ![PiZero温度センサー図](./imgs/pizero_temp.png)
+
+温度センサーが正しく接続されているかを確認します。Terminal より以下のコマンドを入力します。
+
+```
+i2cdetect -y -r 1
+```
+
+正しく接続できていれば下記のように表示されます。
+
+```
+$ i2cdetect -y -r 1
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- --
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+40: -- -- -- -- -- -- -- -- 48 -- -- -- -- -- -- --
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+70: -- -- -- -- -- -- -- --
+```
+
+`48`という表示が見えます。これは 16 進数表示であり、 `0x48` は ADT7410 の SlaveAddress です。
+
+Node.js で temp.js を実行するには、次のコマンドを実行します。
+
+```
+node temp.js
+```
+
+温度が表示されれば完成です 🎉
 
 
 
