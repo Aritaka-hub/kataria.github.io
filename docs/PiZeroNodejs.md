@@ -206,8 +206,7 @@ measure();
 
 
 
-デバイスを扱うためのパッケージについてさらに知りたい場合は [サンプル一覧](./CHIRIMEN-Nodejs-examples) を参照してください。</br>
-※ドライバは随時追加されていきます。[CHIRIMEN Drivers](https://github.com/chirimen-oh/chirimen-drivers) に最新情報が掲載されますので、併せて確認してみてください。
+デバイスを扱うためのパッケージについてさらに知りたい場合は [CHIRIMEN Drivers](https://github.com/chirimen-oh/chirimen-drivers) を参照してください。
 
 また、CHIRIMEN チュートリアルのなかには、Web GPIO や Web I2C によって扱うことのできる[外部デバイスとサンプルコードの一覧があります](https://tutorial.chirimen.org/raspi/partslist)。こちらも参考になるかもしれません。
 
@@ -224,4 +223,3 @@ measure();
 
 
 以上となります。
-

@@ -1,7 +1,6 @@
 # 概要
 
-Raspberry Pi Zero（以降、PiZero）の Node.js から Web GPIO API と Web I2C API を扱う方法です。
-[CHIRIMEN チュートリアルの中の記事](https://tutorial.chirimen.org/raspi/nodejs)を PiZero で実行した記事となります。
+Raspberry Pi Zero（以降、PiZero）の Node.js から Web GPIO API と Web I2C API を扱う方法です。公式の OS イメージに環境を構築していきます。
 
 
 
@@ -32,7 +31,34 @@ Wi-Fi設定を[ブラウザから設定するツール](https://qiita.com/mascii
 このファイルを boot に入れておくと、起動時に自動的に ssh と 無線LAN を有効化します。
 これ以降の操作は ssh を使い遠隔で進めていきます。
 
-無線LAN に簡単に接続が出来ない環境では、[PiZero を USB OTG 接続](https://github.com/webdino/pizero-workshop/blob/20190528/docs/Setup.md) で設定することが出来ます。
+
+
+# PiZeroをUSB接続（OTG Serial 接続）出来るようにする
+
+無線LAN を使用しないで、USB接続で PiZero の操作ができるようにします。今回の設定は SSH を使用する事を前提に記載しますが、モニターやキーボードを接続して設定することも可能です。
+
+ここの設定は SSH で操作できる環境では必須ではありませんが、Wi-Fi 等の無線環境がないところに PiZero を設置した場合にも、PC と USB接続で操作が可能になるので設定推奨です。
+
+`sudo editor /boot/config.txt` と入力して設定ファイルを編集します。
+末尾に `dtoverlay=dwc2` を追記
+
+`sudo editor /boot/cmdline.txt` と入力して設定ファイルを編集します。
+rootwait の後に `modules-load=dwc2,g_serial` を追記
+
+次のコマンドを入力してシンボリックリンクを張ります。
+```
+cd /etc/systemd/system/getty.target.wants
+sudo ln -s /lib/systemd/system/getty@.service getty@ttyGS0.service
+```
+
+以上の３つの設定をしたら、PC と PiZero を USB接続できるようになります。USBケーブルはデータ通信が出来るものを使用し、[PiZero の USBポート（電源ポートではない方）](https://raspberry-pi.ksyic.com/page/page/pgp.id/19)に接続します。
+
+[Web Serial RPiZero Terminal](https://svg2.mbsrv.net/chirimen/webSerial_piZero/testRt4.html) を使用すると、ブラウザから USB接続で SSH と同様にコマンド操作することが可能です。
+
+※ 備考
+OTG 接続には２種類あり、[OTG Ether モード](https://qiita.com/Liesegang/items/dcdc669f80d1bf721c21) を利用した方法もあります。
+詳しくは、[PiZero を USB OTG 接続](https://github.com/webdino/pizero-workshop/blob/20190528/docs/Setup.md) を参照すれば設定することが出来ます。
+
 
 
 
@@ -46,10 +72,10 @@ PiZero に積まれている ARMv6 は古いチップになります。これに
 
 リリース情報（[公式](https://nodejs.org/ja/download/)、[非公式](https://unofficial-builds.nodejs.org/download/release/) ）より、バージョン確認をします。
 ターミナルを起動して以下のコマンドを実行します。
-※2021年4月20日の状況で書いております。
+※2021年7月20日の状況で書いております。
 
 ```
-VERSION=v14.16.1
+VERSION=v14.17.3
 DISTRO=linux-armv6l
 wget https://unofficial-builds.nodejs.org/download/release/$VERSION/node-$VERSION-$DISTRO.tar.xz
 ```
@@ -65,7 +91,7 @@ sudo tar -xJvf node-$VERSION-$DISTRO.tar.xz -C /usr/local/lib/nodejs
 
 ```
 # Nodejs
-VERSION=v14.16.1
+VERSION=v14.17.3
 DISTRO=linux-armv6l
 export PATH=/usr/local/lib/nodejs/node-$VERSION-$DISTRO/bin:$PATH
 ```
@@ -81,11 +107,11 @@ export PATH=/usr/local/lib/nodejs/node-$VERSION-$DISTRO/bin:$PATH
 
 ```
 $ node -v
-v14.16.1
+v14.17.3
 $ npm -v
-6.14.12
+6.14.13
 $ npx -v
-6.14.12
+6.14.13
 ```
 
 参照: [Installation · nodejs/help Wiki · GitHub](https://github.com/nodejs/help/wiki/Installation)
@@ -120,106 +146,6 @@ npm install node-web-gpio node-web-i2c
 ```
 
 これで Node.js から WebGPIO API と WebI2C API を使う準備は完了です。
-
-
-
-# Hello Real World（Lチカを実行する）
-
-Raspberry Pi に接続した LED を点滅させるプログラムを書きます。
-PiZero は Raspberry Pi とピン配置が異なるので、下の図の通りに配線します。
-
-![PiZero配線図](./PiZero_LED.png)
-
-空のテキストファイル main.js を作成し、Node.js のための JavaScript のプログラムを書きます。
-
-```
-editor main.js
-```
-
-テキストエディターで main.js を次のように書きます。
-
-```javascript:main.js
-const { requestGPIOAccess } = require("node-web-gpio");
-const sleep = require("util").promisify(setTimeout);
-
-async function blink() {
-  const gpioAccess = await requestGPIOAccess();
-  const port = gpioAccess.ports.get(26);
-
-  await port.export("out");
-
-  for (;;) {
-    await port.write(1);
-    await sleep(1000);
-    await port.write(0);
-    await sleep(1000);
-  }
-}
-
-blink();
-```
-書き終えたら保存します。
-
-Node.js で main.js を実行するには、次のコマンドを実行します。
-
-```
-node main.js
-```
-
-LED が点滅すれば完成です 🎉
-
-
-
-# いろいろなデバイスを試す
-
-CHIRIMEN ブラウザーから利用できるいろいろなデバイスはすべて同じように Node.js から扱うことができます。
-CUI版 の OS には i2c 関係のパッケージが入っていないので導入します。また、デフォルトで i2c が無効になっているので、raspi-config で有効化しておきます。
-
-```
-sudo apt-get install -y i2c-tools
-sudo raspi-config
-```
-
-次のコードは温度センサー ADT7410 を利用して温度を表示するプログラムです。
-
-```javascript
-const { requestI2CAccess } = require("node-web-i2c");
-const ADT7410 = require("@chirimen/adt7410");
-
-async function measure() {
-  const i2cAccess = await requestI2CAccess();
-  const i2c1 = i2cAccess.ports.get(1);
-  const adt7410 = new ADT7410(i2c1, 0x48);
-  await adt7410.init();
-  const temperature = await adt7410.read();
-  console.log(`Temperature: ${temperature} ℃`);
-}
-
-measure();
-```
-
-コマンド `npm i @chirimen/adt7410` を実行すると、温度センサー ADT7410 を利用するための `@chirimen/adt7410` パッケージをインストールできます。
-
-接続は下の図のようになります。
-
-![PiZero温度センサー図](./PiZero_TEMP.png)
-
-
-
-デバイスを扱うためのパッケージについてさらに知りたい場合は [サンプル一覧](./CHIRIMEN-Nodejs-examples) を参照してください。</br>
-※ドライバは随時追加されていきます。[CHIRIMEN Drivers](https://github.com/chirimen-oh/chirimen-drivers) に最新情報が掲載されますので、併せて確認してみてください。
-
-また、CHIRIMEN チュートリアルのなかには、Web GPIO や Web I2C によって扱うことのできる[外部デバイスとサンプルコードの一覧があります](https://tutorial.chirimen.org/raspi/partslist)。こちらも参考になるかもしれません。
-
-
-
-# CHIRIMEN ブラウザー版との差異
-
-| CHIRIMEN ブラウザー版       | Node.js                                                      |
-| --------------------------- | ------------------------------------------------------------ |
-| navigator.requestGPIOAccess | const { requestGPIOAccess } = require("node-web-gpio"); requestGPIOAccess |
-| navigator.requestI2CAccess  | const { requestI2CAccess } = require("node-web-i2c"); requestI2CAccess |
-| sleep                       | const sleep = require("util").promisify(setTimeout); sleep   |
 
 
 
